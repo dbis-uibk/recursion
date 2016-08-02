@@ -1,0 +1,9 @@
+Abflug:string,Ankunft:string
+Wien,Frankfurt
+Frankfurt,London
+Wien,Budapest
+Wien,Venedig
+Venedig,Rom
+Wien,Zürich
+Zürich,Paris
+Paris,Madrid

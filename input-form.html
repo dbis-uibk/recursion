@@ -1,0 +1,47 @@
+<div ng-show="gistSuccess" class="alert alert-success dataAlert"><a class="close" onclick="$('.dataAlert').hide()" aria-label="close">&times;</a>Importing dataset successful.</div>
+<div ng-show="gistSuccessWarning" class="alert alert-success dataAlert"><a class="close" onclick="$('.dataAlert').hide()" aria-label="close">&times;</a>Importing dataset successful.<br>(Note: Only string and number are supported datatypes, everything else will be treated as string)</div>
+<div ng-show="gistParseError" class="alert alert-danger dataAlert"><a class="close" onclick="$('.dataAlert').hide()" aria-label="close">&times;</a>{{gistParseErrorMsg}}</div>
+<div ng-show="gistLoadError" class="alert alert-danger dataAlert"><a class="close" onclick="$('.dataAlert').hide()" aria-label="close">&times;</a>{{gistLoadErrorMsg}}</div>
+<div ng-show="initLocalEmpty" class="alert alert-warning dataAlert"><a class="close" onclick="$('.dataAlert').hide()" aria-label="close">&times;</a>No local datasets have been loaded.</div>
+<form role="form" ng-controller="inputController as inputCtrl"
+	ng-submit="submitQuery()">
+	<div class="form-group">
+		<div class="row">
+			<!-- Input for recursion -->
+			<div class="col-xs-12">
+				<textarea class="form-control" id="inputText" rows="10"
+					ng-model="query" placeholder="enter your query here..."></textarea>
+			</div>
+			
+			<!-- Submit query + example inputs -->
+			<div class="col-xs-12" style="margin-top:5px;">
+				<button type="submit" disabled id="submitQueryButton" disabled="true" class="btn btn-primary"><span class="glyphicon glyphicon-play"></span>Submit query!</button>
+				<button type="button" style="margin-left:5px;" class="btn btn-info pull-right" 
+					ng-repeat="e in localDb[selectedDb].example as ex track by $index" ng-click="setExample($index)">
+					Example {{ex.length - $index}}
+				</button>
+			</div>
+			
+			<!-- Parse alerts --> 
+			<div class="col-xs-12" style="margin-top:5px;">
+			<div ng-show="parseSuccess" class="alert alert-success">{{validInput}}</div>
+			<div ng-show="parseWarning" class="alert alert-warning">{{validInput}}</div>
+			<div ng-show="parseError" class="alert alert-danger">{{parseErr}}</div>
+			<div ng-show="semanticError" class="alert alert-danger">{{semanticErr}}</div>
+			</div>
+			
+			
+			
+			<!-- Database details -->
+			<div class="col-xs-12">
+				<div id="groupDesc" ng-bind-html="localDb[selectedDb].descHtml"></div>
+				<div ng-show="localDb[selectedDb].hasOwnProperty('gistInfo')">
+					<p id="gistUrl">Source: <a href="{{localDb[selectedDb].gistInfo.url}}">gist.github.com</a></p>
+					<p ng-show="localDb[selectedDb].gistInfo.hasOwnProperty('owner')" id="gistOwner">by: <a href="{{localDb[selectedDb].gistInfo.owner_url}}">
+						{{localDb[selectedDb].gistInfo.owner}}</a></p>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</form>

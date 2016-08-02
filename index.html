@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html ng-app="recursionTool">
+<head>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<script
+	src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js">
+</script>
+<script
+	src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-sanitize.js">
+</script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script
+	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<!-- <script src="js/recursionTool.js"></script> -->
+<script src="js/codemirror/codemirror-compressed.js"></script>
+<script src="js/codemirror/codemirror-sql.js"></script>
+<script src="js/codemirror/placeholder.js"></script>
+<script src="js/bundle.js"></script>
+<!-- <script src="js/SQLike.js"></script> -->
+<script src="js/SQLikeSource.js"></script>
+<script src="https://cdn.rawgit.com/showdownjs/showdown/1.3.0/dist/showdown.min.js"></script>
+<link rel="stylesheet" href="css/codemirror.css">
+<link rel="stylesheet" href="css/main.css">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1">  -->
+<title>SQL-Recursion-Tool</title>
+</head>
+<body>
+	<div class="container" ng-controller="dbController as dbCtrl">
+		<nav class="navbar navbar-default">
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <a class="navbar-brand" href="index.html">SQL-Recursion-Tool</a>
+		    </div>
+		    <ul class="nav navbar-nav navbar-right">
+		      <li><a href="mailto:lucas.ohlicher@student.uibk.ac.at?subject=RecursionTool%20feedback&amp;cc=michael.tschuggnall@uibk.ac.at"><span class="glyphicon glyphicon-envelope"></span> Feedback</a></li>
+		      <li><a href="help.html"><span class="glyphicon glyphicon-question-sign"></span> Help</a></li>
+		    </ul>
+		  </div>
+		</nav>
+		<div class="col-xs-3">
+			<select-database></select-database>
+		</div>
+		<div class="col-xs-9">
+			<input-form></input-form>
+		</div>
+		<div class="col-xs-12">
+			<display-solution></display-solution>
+		</div>
+		
+	</div>
+	<div style="padding-top:30px;"></div>
+	<div style="padding-left:20px;" ng-hide="true">
+	<h4>10-06-16</h4>
+	<ul>
+		<li>added limit for recursive steps (100) and a message if limit is reached</li>
+	</ul>
+	<h4>07-06-16</h4>
+	<ul>
+		<li>calculations now also work with decimal number without using calc()-function</li>
+	</ul>
+	<h4>24-05-16</h4>
+	<ul>
+		<li>added navigation bar with feedback and help</li>
+		<li>help page still needs content</li>
+		<li>updated step-by-step-solution</li>
+		<li>amount of rows are now displayed for every table (and increases for step-by-step solution)</li>
+		<li>current state of recursion now displayed below buttons</li>
+		<li>slight changes to the buttons, eg 'initialization'-button at the beginning</li>
+	</ul>
+	<h4>21-05-16</h4>
+	<ul>
+		<li>updated 'show full tables': smaller button, max. 10 rows per table, amounts of rows displayed</li>
+		<li>example-buttons are now displayed for each dataset separately</li>
+		<li>updated gist-parser to also include example-queries</li>
+		<li>gist-parser: group, description (optional), example (optional), tables</li>
+		<li>same scheme as multi-line description with double-brackets to open and close</li>
+		<li>multiple examples are separated by a semicolon</li>
+		<li>example of examples: <br>example[[select * from flight; select * from flight where id > 2]]</li>
+		<li>step-by-step solution no longer disappears when changing query (before clicking submit)</li>
+	</ul>
+	<h4>19-05-16</h4>
+	<ul>
+		<li>multiple joins should now work as intended</li>
+		<li>joins are executed from left to right - keep this in mind when making queries, could lead to wrong results</li>
+		<li>translated example datasets and example queries from german to english</li>
+		<li>queries with limit >= 10 now work correctly</li>
+		<li>multi-line description for gistfiles finally working (also with markdown-syntax)</li>
+	</ul>
+	<h4>16-05-16</h4>
+	<ul>
+		<li><del>slightly changed (multi-)join functionality</del></li>
+		<li><del>joins with 'on' are converted automatically into implicit joins for sqlike</del></li>
+		<li><del>joins with 'using' can only be used between two but not more tables - due to sqlike</del></li>
+	</ul>
+	<h4>28-04-16</h4>
+	<ul>
+		<li>tables don't have to be specified in queries anymore - (hopefully) for real this time</li>
+		<li>tool now looks at corresponding 'from'-part of query and tries to add missing tables, if possible</li>
+		<li>works for any query-size -> single-select, union (2 selects), recursion (3 selects), etc...</li>
+	</ul>
+	<h4>22-04-16</h4>
+	<ul>
+		<li>tables don't have to be specified in queries anymore, if the column is unique</li>
+		<li>added error messages for non-existing columns in selected tables, and for non-unique columns in selected tables</li>
+	</ul>
+	<h4>20-04-16</h4>
+	<ul>
+		<li>alerts for valid non-recursive input are now yellow to better distinguish between recursive/non-recursive input</li>
+	</ul>
+	<h4>15-04-16</h4>
+	<ul>
+		<li>added another step before it shows the final result</li>
+		<li>step-by-step solution now keeps linebreaks of query</li>
+	</ul>
+	<h4>13-04-16</h4>
+	<ul>
+		<li>like and limit now work correctly again</li>
+		<li>fixed error which made certain where conditions not work</li>
+		<li>added success/error alerts when importing gist-files</li>
+		<li>updated gist parser to parse every datatype (if unknown, its treated as string)</li>
+		<li>added warning when importing dataset with unknown type (example: 2923a30a474fdcb46bee)</li>
+	</ul>
+	<h4>12-04-16</h4>
+	<ul>
+		<li>updated gist parser to use description with markdown (multi-line description currently not working)</li>
+		<li>updated db-description below editor to correctly work again</li>
+	</ul>
+	<h4>07-04-16</h4>
+	<ul>
+		<li>extended step-by-step solution by highlighting corresponding part of the code</li>
+		<li><del>when only selecting from a single table (ie not using any join operation), specifying table is not necessary anymore</del></li>
+		<li><del>important: do not mix between specification -> either specify the table everywhere or nowhere (it will return a wrong result otherwise)</del></li>
+		<li><del>example - use either one, but not a mix: "SELECT abflug FROM flug WHERE id < 2" or "SELECT flug.abflug FROM flug WHERE flug.id < 2</del></li>
+		<li><del>this should work everywhere: where-condition, order by, group by, having, concat(), calc(), ...</del></li>
+		<li>calculations in select not limited in order anymore, ie 1+id and id+1 should work the same</li>
+	</ul>
+	<h4>06-04-16</h4>
+	<ul>
+		<li>aggregate functions are no longer case-sensitive</li>
+		<li>step-by-step solution now ends correctly</li>
+		<li>added sql-part to the result</li>
+	</ul>
+	<h4>05-04-16</h4>
+	<ul>
+		<li>selecting number now works correctly with 'as'</li>
+		<li>added possibility to select signed numbers (+/-)</li>
+		<li>sql comments can now be used in the editor</li>
+		<li>single-line: -- my comment</li>
+		<li>note: the editor only highlights single-line comments if there is a space after --, but it also works without</li>
+		<li>/* my comment */ for multiline</li> 
+		<li>angular problems solved: queries only get executed once, no console errors anymore</li>
+	</ul>
+	<h4>04-04-16</h4>
+	<ul>
+		<li>added datatype (if available) to columns</li>
+		<li>minor fixes in sql and gist parser</li>
+	</ul>
+	<h4>29-03-16</h4>
+	<ul>
+		<li>multiple where-conditions now work again as intended</li>
+	</ul>
+	<h4>28-03-16</h4>
+	<ul>
+		<li>loading gists (same/similar pattern as gists for relax-tool) now possible</li>
+		<li>gists also stored temporarily once loaded</li>
+		<li>tested with gist id 7d1871f79a8bcb4788de</li>
+		<li>parser for gists still needs improvement</li>
+		<li>displays db-information (if available) below editor</li>
+	</ul>
+	<h4>23-03-16</h4>
+	<ul>
+		<li>changing datasets should no longer cause problems with results</li>
+	</ul>
+	<h4>22-03-16</h4>
+	<ul>
+		<li>added parser for gist/local datasets</li>
+		<li>possible to choose from different datasets</li>
+		<li><del>when changing datasets, there can still be errors in queries/results (esp. step-by-step solution)</del></li>
+	</ul>
+	<h4>21-03-16</h4>
+	<ul>
+		<li>improved semantic-check of query (covers alias and with-clauses correctly now)</li>
+		<li>added info why step-by-step solution is not available</li>
+	</ul>
+	<h4>20-03-16</h4>
+	<ul>
+		<li>implemented more complex step-by-step functionality</li>
+		<li>formatting and layout just basic</li>
+	</ul>
+	<h4>18-03-16</h4>
+	<ul>
+		<li>possible to make calculations with +-*/% in select</li>
+		<li>calculate by using numbers or columns</li>
+		<li>start calculation with a number or use calc() (calc() should always work)</li>
+		<li>example: calc(1+flug.id) or calc(flug.id+2*flug.id)</li>
+		<li>error messages now with error position</li>
+		<li><del>multiple where-conditions currently broken (error in parser)...produce error message or wrong result</del></li>
+		<li>buttons for simple step-by-step solution (only for recursion)</li>
+	</ul>
+	<h4>17-03-16</h4>
+	<ul>
+		<li>added concat() function for select, combination of string (double quotes) and table.column as possible parameters</li>
+		<li>added another example to show how concat() works</li>
+	</ul>
+	<h4>16-03-16</h4>
+	<ul>
+		<li>parser update: 
+			<ul>
+				<li>valid query no longer requires semicolon at the end</li>
+				<li>selecting a string-literal is now valid...double quotes necessary</li>
+				<li>selecting a numeric-literal is now valid -> decimal numbers combined with +,-,*,/</li>
+		</ul>
+		</li>
+	</ul>
+	<h4>work in progress - current features (as of 16-03-16)</h4>
+			<ul>
+				<li>one static and arbitrary flights-db for testing purposes</li>
+				<li>syntax- and semantic-check for sql-query entered in editor</li>
+				<li>sql parsing</li>
+				<li>local execution of correct query</li>
+				<li><del>result currently only in js-console available</del></li>
+				<li>possible queries (specify table wherever possible):
+					<ul>	
+					<li>select(distinct)-from-where</li>
+					<li>AND & OR</li>
+					<li>order by</li>
+					<li>like + wildcards</li>
+					<li>between</li>
+					<li>aliases</li>
+					<li>join using/on</li>
+					<li>left/right/full/cross/natural join</li>
+					<li>union/except/intersect (all)</li>
+					<li>avg(),min(),max(),sum(),count()</li>
+					<li>group by, having (only works when directly after group by)</li>
+					<li>limit</li>
+					<li>CTE and recursive CTE</li>
+					</ul>
+				</li>
+				<li>not yet (correctly) implemented in parser and/or sql-execution
+					<ul>
+					<li>multiple joins</li>
+					<li>nested selects</li>
+					<li>'in' not working correctly</li>
+					<li><del>comments</del></li>
+					<li>dates</li>
+					<li>(probably several undiscovered surprises)</li>
+					</ul> 
+				</li>	
+			<h4>10-03-16</h4>
+			<ul>
+				<li><strong>recursive queries should now work</strong></li>
+				<li>results for each step currently displayed all at once</li>
+			</ul>
+			<h4>09-03-16</h4>
+			<ul>
+				<li>fixed error where join-operators were still case-sensitive</li>
+				<li>query result now gets display directly on the page</li>
+				<li><strong>recursive query works for example provided by the button below the editor (generic implementation will follow soon)</strong></li>
+				<li>so far only final result of recursion gets displayed</li>
+			</ul>
+			<h4>08-03-16</h4>
+			<ul>
+				<li>fixed error that caused 'as' not to properly work when used in 'from'</li>
+				<li>non-recursive with-clauses should now work</li>
+				<li>parser now distinguishes between recursive and non-recursive queries</li>
+				<li>recursive: rather strict pattern, needs to satisfy following points (maybe more to be added)
+					<ul>
+						<li>needs to be a with-clause</li>
+						<li>query definition (inner part) must have compound-operator 'union all'</li>
+						<li>the 2nd part of union all has a recursive reference to the with-clause</li>
+						<li>outer query selects the with-clause</li>
+					</ul>
+				</li>
+				<li>non-recursive: everything else, that does not satisfy the above</li>
+			</ul>
+			<h4>22-02-16</h4>
+			<ul>
+				<li>extended syntax- and semantic-checks to also include specific cases for with-clauses</li>
+			</ul>
+			<h4>20-02-16</h4>
+			<ul>
+				<li>added basic with-syntax to parser</li>
+			</ul>
+			<h4>18-02-16</h4>
+			<ul>
+				<li>parser: aggregate-functions also for groupby/having</li>
+				<li>fixed error in SQLike that caused group by not to work on table.column</li>
+				<li>groupby/having now usable in queries (having only works if followed directly after group by)</li>
+			</ul>
+			<h4>16-02-16</h4>
+			<ul>
+				<li>parser fixes for groupby/having</li>
+				<li>added aggregate-functions (avg,sum,count,min,max) to parser</li>
+				<li>aggregate function now usable in select</li>
+			</ul>
+			<h4>04-02-16</h4>
+			<ul>
+				<li>parser fixes for like/between</li>
+				<li>'(not) between/like' can now be used in queries</li>
+			</ul>
+			
+			</ul>
+			<h4>External resources</h4>
+			<ul>
+				<li><a href="https://angularjs.org/">AngularJS</a></li>
+				<li><a href="http://getbootstrap.com/">Bootstrap</a></li>
+				<li><a href="http://browserify.org/">Browserify</a></li>
+				<li><a href="https://jquery.com/">jQuery</a></li>
+				<li><a href="https://codemirror.net/">CodeMirror</a></li>
+				<li><a href="http://www.thomasfrank.se/sqlike.html">SQLike</a></li>
+				<li><a href="https://github.com/alsotang/sql.pegjs">sql.pegjs</a></li>
+				<li><a href="https://github.com/showdownjs/showdown">Showdown - Markdown to HTML Converter</a>
+			</ul>
+		</div>
+</body>
+</html>

@@ -1,0 +1,90 @@
+group: Parts (Lecture)
+description[[Tables and example from lecture [Datenbanksysteme](http://dbis-informatik.uibk.ac.at/291-0-VO-Datenbanksysteme.html)  
+The example is a simple recursion to calculate all parts necessary to build part '01'
+]]
+example[[
+-- This query calculates all parts necessary to build part '01'
+WITH RecRel(part,subpart,amount) AS
+(
+	SELECT init.part, init.subpart, init.amount FROM parts AS init WHERE init.part = "01"
+	UNION ALL
+	SELECT child.part, child.subpart, child.amount
+	FROM RecRel AS father JOIN parts AS child on father.subpart = child.part
+)
+SELECT * FROM RecRel
+]]
+parts = 
+{
+	part:string,	subpart:string,	amount:number
+	'00'		,	'01'		,	5
+	'00'		,	'05'		,	3
+	'01'		,	'02'		,	2
+	'01'		,	'03'		,	3
+	'01'		,	'04'		,	4
+	'01'		,	'06'		,	3
+	'02'		,	'05'		,	7
+	'02'		,	'06'		,	6
+	'03'		,	'07'		,	6
+	'04'		,	'08'		,	10
+	'04'		,	'09'		,	11
+	'05'		,	'10'		,	10
+	'05'		,	'11'		,	10
+	'06'		,	'12'		,	10
+	'06'		,	'13'		,	10
+	'07'		,	'12'		,	8
+	'07'		,	'14'		,	8
+}
+
+group: Flights simple
+description[[
+Example 1 is a simple recursion to calculate all airports that can be reached from Vienna.  
+Example 2 is basically the same query that additionally counts the steps and calculates the path taken.
+]]
+example[[
+/* This query calculates all airports that can be reached from Vienna. */
+WITH RecRel(departure,destination) AS
+(
+	SELECT departure, destination FROM flight WHERE departure = "VIE"
+	UNION ALL
+	SELECT step.departure, step.destination
+	FROM RecRel AS rec JOIN flight AS step ON (rec.destination = step.departure) 
+)
+SELECT * FROM RecRel;
+/* Calculates all airports reachable from Vienna, counts the steps and calculates the path taken. */
+WITH RecRel(step,path,departure,destination) AS
+(
+	SELECT 1, concat(departure," - ",destination),departure, destination FROM flight WHERE departure = "VIE"
+	UNION ALL
+	SELECT rec.step+1, concat(rec.path," - ",step.destination),step.departure, step.destination
+	FROM RecRel AS rec JOIN flight AS step ON (rec.destination = step.departure) 
+)
+SELECT * FROM RecRel
+]]
+flight = 
+{
+	departure:string,	destination:string,	id:number
+	'VIE',			'FRA',			0
+	'FRA',			'LHR',			1
+	'VIE',			'BUD',			2
+	'VIE',			'VCE',			3
+	'VCE',			'FCO',			4
+	'VIE',			'ZRH',			5
+	'ZRH',			'CDG',			6
+	'CDG',			'MAD',			7
+	'MAD',			'LIS',			8
+}
+
+airport = 
+{
+	location:string,	country:string,	iata:string,	id:number
+	'Vienna',			'Austria',		'VIE',			0
+	'Frankfurt',		'Germany',		'FRA',			1
+	'London',			'England',		'LHR',			2
+	'Budapest',			'Hungary',		'BUD',			3
+	'Venice',			'Italy',		'VCE',			4
+	'Rome',				'Italy',		'FCO',			5
+	'Zurich',			'Switzerland',	'ZRH',			6
+	'Paris',			'France',		'CDG',			7
+	'Madrid',			'Spain',		'MAD',			8
+	'Lisbon',			'Portugal',		'LIS',			9
+}

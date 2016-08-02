@@ -1,0 +1,90 @@
+<div ng-show="withStep">
+		<p><span id="innerInit" ng-bind-html="innerInit"></span></p>
+		<p><span id="innerUnion" ng-bind-html="innerUnion"></span></p>
+		<p><span id="innerRec" ng-bind-html="innerRec"></span></p>
+</div>
+<div id="sbs-solution" class="col-xs-12" ng-show="withStep">
+<div class="col-xs-5" ng-show="withStep" style="">
+		<!-- step by step (all-in-one) -->
+		<h3>Table: {{formatInfo.tableRecName}} <small>{{cumulatedRows}} rows</small></h3>
+			<h4 ng-show="initEmpty && formatCount == 1">Init-Query returned no results</h4>
+			<table ng-hide="initEmpty" class="table table-condensed" id="stepbystep">
+				<thead>
+					<tr>
+						<th ng-repeat="head in header" id="thRec{{$index}}">{{head}}</th>
+					</tr>
+				</thead>
+				<tbody ng-repeat="steps in fullData track by $index" ng-show="stepCount > $index" id="step{{$index}}">
+					<tr ng-repeat="d in fullData[$index]" id="trRec{{$index}}">
+						<td ng-repeat="row in d" class="tdRec{{$index}}">{{row}}</td>
+					</tr>
+				</tbody>
+			</table>	
+			<button type="button" ng-hide="stepCount <= 0" class="btn btn-primary" ng-click="previousStep()">previous step</button>
+			<button type="button" ng-show="stepCount == 0 && formatCount == 0" class="btn btn-primary" ng-click="nextStep()">Initialization</button>
+			<button type="button" ng-show="stepCount > 0 && !(stepCount == fullData.length+1 && formatCount >= 2*stepCount-1)" ng-disabled="" class="btn btn-primary" ng-click="nextStep()">next step</button>
+			<button type="button" ng-disabled="stepCount == fullData.length+1 && formatCount == 2*stepCount || initEmpty" class="btn btn-primary" ng-click="showFullResult()">show final result</button>
+			
+			<div style="margin-top:5px;">
+			<div ng-show="formatCount == 1 && !initEmpty" class="alert alert-info">Current Status: Initialization<br>Next step: Determining join partners</div>
+			<div ng-show="formatCount == 1 && initEmpty" class="alert alert-warning">Initialization returned not results, no recursion possible</div>
+			<div ng-show="formatCount > 1 && formatCount%2 == 0 && stepCount <= fullData.length" class="alert alert-info">Current Status: Determining join partners<br>Next step: Executing join and unifying result</div>
+			<div ng-show="formatCount > 1 && formatCount%2 == 1 && stepCount <= fullData.length" class="alert alert-info">Current Status: Result of step {{stepCount-1}}<br>Next step: Determining join partners</div>
+			<div ng-show="stepCount == fullData.length+1 && formatCount%2 == 1 && !initEmpty && !stepLimit" class="alert alert-info">Current Status: Recursion stopped - No join partner available<br>Next step: Execution of final (outer) query</div>
+			<div ng-show="stepCount == fullData.length+1 && formatCount%2 == 1 && !initEmpty && stepLimit" class="alert alert-info">Current Status: Recursion stopped - Maximum amount of recursive steps reached<br>Next step: Execution of final (outer) query</div>
+			<div ng-show="stepCount == fullData.length+1 && formatCount == 2*stepCount && !initEmpty" class="alert alert-info">Current Status: Execution of final (outer) query - finished</div>
+			</div>
+</div>	
+
+<!-- display join condition -->
+<div class="col-xs-2" ng-show="withStep">
+	<p ng-show="formatCount > 1 && formatCount%2 == 0 && stepCount <= fullData.length" ><br><span style="font-size:24px;">&#10781;</span><br>{{formatInfo.tableRecName}}.{{formatInfo.columnRec}} {{formatInfo.op}} {{formatInfo.tableJoinName}}.{{formatInfo.columnJoin}}</p>
+	<!--
+	<p>stepCount {{stepCount}}</p>
+	<p>formatCount {{formatCount}}</p>
+	 
+	<p ng-show="formatCount == 1 && !initEmpty"><br>Initialization</p>
+	<p ng-show="formatCount == 1 && initEmpty">Initialization returned no results, no recursion possible</p> 
+	<p ng-show="formatCount > 1 && formatCount%2 == 1 && stepCount <= fullData.length"><br>Result of step {{stepCount-1}}</p>
+	<p ng-show="stepCount == fullData.length+1 && formatCount%2 == 1 && !initEmpty"><br>Recursion stopped<br>No more join partner available</p>
+	<p ng-show="stepCount == fullData.length+1 && formatCount == 2*stepCount && !initEmpty"><br>Execution of outer query (see below)</p>
+	 -->
+</div>		
+
+<!-- static join table -->
+<div class="col-xs-5" ng-hide="formatCount < 2 || !withStep">
+	<h3>Table: {{formatInfo.tableJoinName}} <small>{{formatInfo.tableJoin.length}} rows</small></h3>
+	<table ng-hide="initEmpty" class="table table-condensed" id="jointable">
+		<thead>
+			<tr>
+				<th ng-repeat="(key, val) in formatInfo.tableJoin[0]" id="thJoin{{$index}}">{{key}}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="d in formatInfo.tableJoin track by $index" id="trJoin{{$index}}">
+				<td ng-repeat="row in d" class="tdJoin{{$index}}">{{row}}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+</div>
+<!-- results of non-recursive query -->
+<div id="final-solution" class="col-xs-12" ng-hide="withStep" ng-show="stepCount == fullData.length+1 && formatCount == 2*stepCount">
+	<div ng-hide="initEmpty">
+		<h4 ng-show="withStep">Final (outer) query <small>{{cumulatedRows}} rows</small></h4>
+		<p><span id="outerQuery" ng-show="withStep" ng-bind-html="outerQuery"></span></p>
+		<h4 ng-show="finalEmpty || initEmpty">This query did not return any results</h4>
+			<table ng-hide="finalEmpty" class="table table-condensed">
+				<thead>
+					<tr>	
+						<th ng-repeat="head in finalHeader">{{head}}</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="d in finalData">
+						<td ng-repeat="row in d">{{row}}</td>
+					</tr>
+				</tbody>
+			</table>
+	</div>
+</div>

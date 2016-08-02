@@ -1,0 +1,49 @@
+<div class="container">
+	<ul ng-repeat="t in printable">
+		<li>{{t.head}}</li>
+		<ul ng-repeat="c in t.col">
+			<li>{{c.name}}<span ng-show="c.hasOwnProperty('type')"> : {{c.type}}</span></li>
+		</ul>
+	</ul>
+
+
+	<!-- Displaying full tables with modal -->
+	<button type="button" class="btn btn-info btn-sm" style="margin-left:50px;" data-toggle="modal"
+		data-target="#fullTables">Show full tables</button>
+	<div id="fullTables" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h5 class="modal-title">{{localDb[selectedDb].group}}</h5>
+				</div>
+				<div class="modal-body">
+					<div ng-repeat="t in printable">
+					<h3>{{t.head}} <small>{{t.data.length}} rows</small></h3>
+					<table class="table table-condensed">
+						<thead>
+							<tr>	
+								<th ng-repeat="c in t.col">{{c.name}}<span ng-show="c.hasOwnProperty('type')"> : {{c.type}}</span></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="d in t.data track by $index">
+								<td ng-repeat="row in d" ng-if="$parent.$index<10">{{row}}</td>
+							</tr>
+							<tr ng-if="t.data.length>10">
+								<td ng-repeat="row in t.data[0]">...</td>
+							</tr>
+						</tbody>
+	
+						
+					</table>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>

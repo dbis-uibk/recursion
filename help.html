@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html ng-app="recursionTool">
+<head>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<script
+	src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js">
+</script>
+<script
+	src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-sanitize.js">
+</script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script
+	src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<!-- <script src="js/recursionTool.js"></script> -->
+<script src="js/codemirror/codemirror-compressed.js"></script>
+<script src="js/codemirror/codemirror-sql.js"></script>
+<script src="js/codemirror/placeholder.js"></script>
+<script src="js/bundle.js"></script>
+<!-- <script src="js/SQLike.js"></script> -->
+<script src="js/SQLikeSource.js"></script>
+<script src="https://cdn.rawgit.com/showdownjs/showdown/1.3.0/dist/showdown.min.js"></script>
+<link rel="stylesheet" href="css/codemirror.css">
+<link rel="stylesheet" href="css/main.css">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1">  -->
+<title>SQL-Recursion-Tool</title>
+</head>
+<body>
+		<div class="container" ng-controller="dbController as dbCtrl">
+		<nav class="navbar navbar-default">
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <a class="navbar-brand" href="index.html">SQL-Recursion-Tool</a>
+		    </div>
+		    <ul class="nav navbar-nav navbar-right">
+		      <li><a href="mailto:lucas.ohlicher@student.uibk.ac.at?subject=RecursionTool%20feedback&amp;cc=michael.tschuggnall@uibk.ac.at"><span class="glyphicon glyphicon-envelope"></span> Feedback</a></li>
+		      <li><a href="help.html"><span class="glyphicon glyphicon-question-sign"></span> Help</a></li>
+		    </ul>
+		  </div>
+		</nav>
+		<div class="col-xs-12">
+		<h2>Help</h2>
+		<h4><a href="#tutorial_user">Tutorial - user</a></h4>
+		<ul>
+			<li><a href="#introduction">Introduction</a></li>
+			<li><a href="#recursion">Recursion in SQL and in the tool</a></li>
+		</ul>
+		<h4><a href="#tutorial_maintainer">Tutorial - maintainer</a></h4>
+		<ul>
+			<li><a href="#creating_dataset">Creating a data set</a></li>
+		</ul>
+		<h4><a href="#sql_reference">SQL reference</a></h4>
+		<ul>
+			<li><a href="#further_explanation">Further Explanation</a></li>
+		</ul>
+		<h4><a href="#unsupported_sql">Unsupported SQL</a></h4>
+		<h4><a href="#external_resources">External Resources</a></h4>
+		<h4><a href="#changelog">Changelog</a></h4>
+		
+		<h3 id="tutorial_user">Tutorial - user</h3>
+		<h4 id="introduction">Introduction</h4>
+		<p>The goal of this tool is to provide a platform to help practicing the recursion in SQL.
+		All calculations are done directly in the browser, therefore the tool does not require a connection to a database.
+		It supports most of the commonly used functions and commands of SQL, including the recursion. 
+		For a list of all supported functions and an explanation on how to use them, please refer to the <a href="#sql_reference">SQL reference</a> below.</p>
+		
+		<h4 id="recursion">Recursion in SQL and in the tool</h4>
+		<p>SQL:1999 introduced Common Table Expressions (CTE). A CTE is a temporary set which contains the result of a query. You can refer to this set with a query or it can refer to itself respectively. By referring to itself it is possible to make recursive queries.
+		For a more detailed look at recursive queries in SQL, please refer to the <a href="https://technet.microsoft.com/en-us/library/ms186243%28v=sql.105%29.aspx">official documentation</a> by Microsoft.</p>
+		<p>In this tool, a recursive query can be executed step by step. While doing so, the current step, the corresponding code as well as the involved tables will be highlighted. This should help provide the user with a better understanding on how such a query works. It should also highlight the fact, that a recursion should not be considered as an incomprehensible construct but rather as a combination of its separate components, which are, usually, simple queries.</p>
+		<p>A query needs to meet a certain criteria to be recognized as a recursive query by the tool. If any of the following points is not fulfilled, the tool will not recognize the query as recursive and thus the step-by-step solution will not be available.</p>
+		<ul>
+			<li><strong>With-Clause</strong><br>A CTE is necessary because it is the only way to make recursive queries in SQL.</li>
+			<li><strong>Union All</strong><br>In SQL, a recursion will only return the desired result, if initialization and step case are combined by using the Union All operator.</li>
+			<li><strong>Recursive Reference and Join in step case</strong><br>The seconds Select-Statement in the CTE has to refer to itself in some way (the actual recursion). Additionally, this statement also has to contain a Join to guarantee that the result can actually grow with every step</li>
+			<li><strong>Selecting With-Clause</strong><br>The outer query has to select at least one column of the just calculated recursion. In reality, this point would not be necessary - it is rather to make the user aware, that the final result of the recursion can only be displayed with this query.</li>
+		</ul>
+		
+		<h3 id="tutorial_maintainer">Tutorial - maintainer</h3>
+		<p>Anybody can create and share data sets that can be used within the tool. 
+		This can be done via <a href="https://gist.github.com/">GitHub Gists</a>, a free platform to share code snippets.
+		Once created, such a data set can be imported into the tool by using its unique ID.
+		It can be found at the end of the URL or at the top of the page as <i>gist:xxxxxxxxxxxxxx</i>.</p>
+		
+		<h4 id="creating_dataset">Creating a data set</h4>
+		<p>A data set is specified as a simple text file that is created as a Github Gist (the name of the gist does not matter).
+		The <a href="http://dbis-uibk.github.io/relax/">RelaX - relational algebra calculator</a> uses the same syntax for its data, therefore gists can be used in both tools.</p>
+		<p>The already included flight-database will be used as an example on how to create a compatible gist file for this tool. The full file can also be found 
+		<a href="https://gist.github.com/lohlicher/ebe029ac0f9a52454d5e7cc25e01b017">here</a>.</p>
+		
+		<p>First, a <strong>group</strong> attribute has to be defined. It serves as the title of the database and is displayed in the 'Select Database' menu.</p>
+		<p>This attribute can consist of any character and is read until the first line break.</p>
+		<div class="codeExample">
+			<code class="codeExample">group: Flights simple</code>
+		</div>
+		<br>
+		<p>The next attribute is the <strong>description</strong>. It is <strong>optional</strong> and does not have to be included.</p>
+		<p>It is displayed below the editor and should be used to further describe your data set and to provide additional links to sources.</p>
+		<p>It can either be a single-line description, with syntax just like the in group attribute, or a multi-line description where brackets have to be used to indicate the start and end of the description.</p>
+		<p>Furthermore, the <a href="https://en.wikipedia.org/wiki/Markdown">Markdown</a>-Syntax is supported to easily convert the description to HTML code</p> 
+		<div class="codeExample">
+			<code class="codeExample">
+			description[[<br>
+			Example 1 is a simple recursion to calculate all airports that can be reached from Vienna.<br>  
+			Example 2 is basically the same query that additionally counts the steps and calculates the path taken.<br>
+			]]<br>
+			</code>
+		</div>		
+		<br>
+		<p>Next, one or more <strong>examples</strong> can be defined. This attribute is <strong>optional</strong> as well and can be omitted</p>
+		<p>If a data set includes examples, they can be inserted into the editor by using the respective button on the bottom right of the editor</p>
+		<p>The syntax with the brackets for multi-line descriptions is used again. To separate multiple examples, a semi-colon is used</p>
+		<p>The examples are inserted into the editor with the same format as used in the gist-file, including line breaks and tabulators</p>
+		<div class="codeExample">
+			<code class="codeExample">	
+			example[[<br>
+			/* This query calculates all airports that can be reached from Vienna. */<br>
+			WITH RecRel(departure,destination) AS<br>
+			(<br>
+				SELECT departure, destination FROM flight WHERE departure = "VIE"<br>
+				UNION ALL<br>
+				SELECT step.departure, step.destination<br>
+				FROM RecRel AS rec JOIN flight AS step ON (rec.destination = step.departure)<br> 
+			)<br>
+			SELECT * FROM RecRel;<br><br>
+			/* Calculates all airports reachable from Vienna, counts the steps and calculates the path taken. */<br>
+			WITH RecRel(step,path,departure,destination) AS<br>
+			(<br>
+				SELECT 1, concat(departure," - ",destination),departure, destination FROM flight WHERE departure = "VIE"<br>
+				UNION ALL<br>
+				SELECT rec.step+1, concat(rec.path," - ",step.destination),step.departure, step.destination<br>
+				FROM RecRel AS rec JOIN flight AS step ON (rec.destination = step.departure) <br>
+			)<br>
+			SELECT * FROM RecRel<br>
+			]]<br>
+			</code>
+		</div>
+		<br>
+		<p>Finally, the actual data has to be defined. This is similar to defining variables in several programming languages.</p>
+		<p>The name of the variable is in this case the name of the table and on the inside, the columns are defined.</p>
+		<p>The first line defines the name and the data type of the column. The data type is optional, so each column is either defined as <i>name</i> or <i>name:data type</i>.</p>
+		<p>Note that only 'string' and 'number' are supported data types, everything else is treated as a string.</p>
+		<p>In the following rows the entries of the table can be defined, where single quotes should be used for strings</p>
+		<div class="codeExample">
+			<code class="codeExample">
+			flight =<br> 
+			{<br>
+				departure:string,	destination:string,	id:number<br>
+				'VIE',			'FRA',			0<br>
+				'FRA',			'LHR',			1<br>
+				...<br>	
+			}<br>
+			<br>
+			airport = <br>
+			{<br>
+				location:string,	country:string,	iata:string,	id:number<br>
+				'Vienna',			'Austria',		'VIE',			0<br>
+				'Frankfurt',		'Germany',		'FRA',			1<br>
+				...<br>
+			}
+			</code>
+		</div>
+		
+		<h3 id="sql_reference">SQL reference</h3>
+		<p>This tool calculates queries by itself, therefore not all functions from SQL can be used within the tool. In the following, every possible function and command will be listed and explained further, if necessary.</p>
+		<ul>
+			<li>Select (Distinct) - From - Where</li>
+			<li>And and Or</li>
+			<li>Order By</li>
+			<li>Like</li>
+			<li>Wildcards</li>
+			<li>Between</li>
+			<li>Not</li>
+			<li>Aliases with As</li>
+			<li>Joins with Using/On</li>
+			<li>Left/Right/Full/Cross/Natural Join</li>
+			<li>Group By and Having</li>
+			<li>Limit</li>
+			<li>Union/Except/Intersect (All)</li>
+			<li>Aggregate functions (AVG, COUNT, MIN, MAX, SUM)</li>
+			<li>String concatenation with concat() in Select</li>
+			<li>Basic calculations and modulo in Select</li>
+			<li>Recursive Queries</li>
+			<li>Comments</li>
+		</ul>
+		<h4 id="further_explanation">Further Explanation</h4>
+		<p>In order to avoid any lack of clarity, some functions and characteristics of the tool will be further explained:</p>
+		<ul>
+			<li><strong>Referencing</strong><br>It is not necessary to always specify the table in queries. If the table can clearly be determined, the name of the column is enough. However, if a column does not have a unique name, it can't be assign definitely to a table automatically and it has to be specified as <i>table.column</i>.</li>
+			<li><strong>Joins</strong><br>Joins of any form will be executed from left to right. This is important when making queries with multiple joins because a different type of join might return different column names and furthermore lead to a wrong result. For example, a Join with Using only returns one column while a Join with On returns two columns with the respective prefix of its table. It is advised to mix different types of joins when making queries, if possible.</li>
+			<li><strong>Group By and Having</strong><br>Having can only be used in combination with Group By and only if it follows directly after the Group By statement.</li>
+			<li><strong>String concatenation with concat()</strong><br>Any combination of columns and strings can be concatenated in the Select part of the query. This is done by using the concat() function.<br>
+			<code class="codeExample">SELECT concat("This is flight ",id," to ",destination) FROM flight</code>
+			</li>
+			<li><strong>Basic calculations and modulo</strong><br>Calculations with decimal numbers can directly be declared as a column. Alternatively, a calc() function, similar to concat(), can be used.<br>
+			<code class="codeExample">SELECT 2*id FROM flight<br>SELECT calc(2+id%2) FROM flight</code>
+			</li>
+			<li><strong>Comments</strong><br>Comments can be used just like in SQL.<br>
+			<code class="codeExample">-- single-line comment<br>/*<br>multi-line comment<br>*/</code>
+			</li>
+		</ul>
+		<h3 id="unsupported_sql">Unsupported SQL</h3>
+		<p>For completeness, here is a list of functions that are not supported by the tool. Mostly because they are not needed or due to technical reasons</p>
+		<ul>
+			<li>Subqueries</li>
+			<li>In</li>
+			<li>Is (Not) Null</li>
+			<li>Complex data types (e.g. DATE)</li>
+			<li>Data Definition Language (e.g. CREATE TABLE)</li>
+			<li>Data Manipulation Language (e.g. INSERT INTO or UPDATE)</li>
+		</ul>
+		<h3 id="external_resources">External resources</h3>
+			<ul>
+				<li><a href="https://angularjs.org/">AngularJS</a></li>
+				<li><a href="http://getbootstrap.com/">Bootstrap</a></li>
+				<li><a href="http://browserify.org/">Browserify</a></li>
+				<li><a href="https://codemirror.net/">CodeMirror</a></li>
+				<li><a href="https://jquery.com/">jQuery</a></li>
+				<li><a href="https://github.com/showdownjs/showdown">Showdown - Markdown to HTML Converter</a>
+				<li><a href="http://www.thomasfrank.se/sqlike.html">SQLike</a></li>
+				<li><a href="https://github.com/alsotang/sql.pegjs">sql.pegjs</a></li>
+			</ul>
+		<h3 id="changelog">Changelog</h3>
+		<h4>10-06-16</h4>
+		<ul>
+			<li>Added limit for recursive steps (100) and a message if limit is reached</li>
+		</ul>
+		<h4>07-06-16</h4>
+		<ul>
+			<li>Calculations for decimal numbers now also work without using calc() function</li>
+		</ul>
+		<h4>24-05-16</h4>
+		<ul>
+			<li>Added navigation bar for feedback and help</li>
+			<li>Updated step-by-step-solution</li>
+			<li>Amount of rows are now displayed for every table (and increases in step-by-step solution automatically)</li>
+			<li>Current state of recursion now displayed below buttons</li>
+			<li>Slight changes to the buttons, eg 'initialization'-button at the beginning</li>
+		</ul>
+		<h4>21-05-16</h4>
+		<ul>
+			<li>Updated 'show full tables': smaller button, max. 10 rows per table, amounts of rows displayed</li>
+			<li>Example-buttons are now displayed for each dataset separately</li>
+			<li>Updated gist-parser to also include example-queries</li>
+			<li>Gist-parser: group, description (optional), example (optional), tables</li>
+			<li>Same scheme as multi-line description with double-brackets to open and close</li>
+			<li>Multiple examples are separated by a semicolon</li>
+			<li>Example of examples: <br>example[[select * from flight; select * from flight where id > 2]]</li>
+			<li>Step-by-step solution no longer disappears when changing query (before clicking submit)</li>
+		</ul>
+		<h4>19-05-16</h4>
+		<ul>
+			<li>Multiple joins should now work as intended</li>
+			<li>Translated example datasets and example queries from German to English</li>
+			<li>Queries with limit >= 10 now work correctly</li>
+			<li>Multi-line description for gist-files now finally working (also with markdown-syntax)</li>
+		</ul>
+		<h4>28-04-16</h4>
+		<ul>
+			<li>Tables don't have to be specified in queries anymore</li>
+			<li>Tool now looks at corresponding 'from'-part of query and tries to add missing tables, if possible</li>
+			<li>Works for any query size -> single-select, union (2 selects), recursion (3 selects), etc...</li>
+			<li>Added error messages for non-existing columns in selected tables, and for non-unique columns in selected tables</li>
+		</ul>
+		<h4>20-04-16</h4>
+		<ul>
+			<li>Alerts for valid non-recursive input are now yellow to better distinguish between recursive/non-recursive input</li>
+		</ul>
+		<h4>15-04-16</h4>
+		<ul>
+			<li>Added another step before step-by-step solution shows the final result</li>
+			<li>Step-by-step solution now keeps linebreaks of query</li>
+		</ul>
+		<h4>13-04-16</h4>
+		<ul>
+			<li>Like and Limit now work correctly again</li>
+			<li>Fixed error which made certain Where-conditions not work</li>
+			<li>Added success/error alerts when importing gist-files</li>
+			<li>Updated gist-parser to parse every datatype (if unknown, its treated as string)</li>
+			<li>Added warning when importing dataset with unknown type (example: 2923a30a474fdcb46bee)</li>
+		</ul>
+		<h4>12-04-16</h4>
+		<ul>
+			<li>Updated gist-parser to use description with markdown</li>
+			<li>Updated db-description below editor to correctly work again</li>
+		</ul>
+		<h4>07-04-16</h4>
+		<ul>
+			<li>Extended step-by-step solution by highlighting corresponding part of the code</li>
+			<li>Calculations in select not limited in order anymore, ie 1+id and id+1 should work the same</li>
+		</ul>
+		<h4>06-04-16</h4>
+		<ul>
+			<li>Aggregate functions are no longer case-sensitive</li>
+			<li>Step-by-step solution now ends correctly</li>
+			<li>Added SQL-part to the result</li>
+		</ul>
+		<h4>05-04-16</h4>
+		<ul>
+			<li>Selecting number now works correctly with 'as'</li>
+			<li>Added possibility to select signed numbers (+/-)</li>
+			<li>SQL comments can now be used in the editor</li>
+			<li>Single-line: -- my comment</li>
+			<li>Note: the editor only highlights single-line comments if there is a space after --, but it also works without</li>
+			<li>/* my comment */ for multi-line</li> 
+		</ul>
+		<h4>04-04-16</h4>
+		<ul>
+			<li>Added datatype (if available) to columns</li>
+			<li>Minor fixes in SQL- and gist-parser</li>
+		</ul>
+		<h4>29-03-16</h4>
+		<ul>
+			<li>Multiple Where-conditions now work again as intended</li>
+		</ul>
+		<h4>28-03-16</h4>
+		<ul>
+			<li>Loading gists (same/similar pattern as gists for relax-tool) now possible</li>
+			<li>Gists also stored temporarily once loaded</li>
+			<li>Tested with gist id 7d1871f79a8bcb4788de</li>
+			<li>Displays db-information (if available) below editor</li>
+		</ul>
+		<h4>23-03-16</h4>
+		<ul>
+			<li>Changing datasets should no longer cause problems with results</li>
+		</ul>
+		<h4>22-03-16</h4>
+		<ul>
+			<li>Added parser for gist/local datasets</li>
+			<li>Possible to choose from different datasets</li>
+		</ul>
+		<h4>21-03-16</h4>
+		<ul>
+			<li>Improved semantic-check of query (covers alias and with-clauses correctly now)</li>
+			<li>Added information on why step-by-step solution is not available</li>
+		</ul>
+		<h4>20-03-16</h4>
+		<ul>
+			<li>Implemented more complex step-by-step functionality</li>
+		</ul>
+		<h4>18-03-16</h4>
+		<ul>
+			<li>Added possibility to make calculations with +-*/% in select</li>
+			<li>Calculate by using numbers or columns</li>
+			<li>Start calculation with a number or use calc() (calc() should always work)</li>
+			<li>example: calc(1+flug.id) or calc(flug.id+2*flug.id)</li>
+			<li>Error messages now with error position</li>
+			<li>Buttons for simple step-by-step solution (only for recursion)</li>
+		</ul>
+		<h4>17-03-16</h4>
+		<ul>
+			<li>Added concat() function for select, combination of string (double quotes) and table.column as possible parameters</li>
+			<li>Added another example to show how concat() works</li>
+		</ul>
+		<h4>16-03-16</h4>
+		<ul>
+			<li>Parser update: 
+				<ul>
+					<li>Valid query no longer requires semicolon at the end</li>
+					<li>Selecting a string-literal is now valid - double quotes necessary</li>
+					<li>selecting a numeric-literal is now valid - decimal numbers combined with +,-,*,/</li>
+			</ul>
+			</li>
+		</ul>
+		<h4>10-03-16</h4>
+		<ul>
+			<li><strong>Recursive queries should now work</strong></li>
+		</ul>
+		<h4>09-03-16</h4>
+		<ul>
+			<li>Fixed error where join-operators were still case-sensitive</li>
+			<li>Query result now gets display directly on the page</li>
+		</ul>
+		<h4>08-03-16</h4>
+		<ul>
+			<li>Fixed error that caused 'as' not to properly work when used in 'from'</li>
+			<li>Non-recursive with-clauses should now work</li>
+			<li>Parser now distinguishes between recursive and non-recursive queries</li>
+		</ul>
+		<h4>22-02-16</h4>
+		<ul>
+			<li>Extended syntax- and semantic-checks to also include specific cases for with-clauses</li>
+		</ul>
+		<h4>20-02-16</h4>
+		<ul>
+			<li>Added basic with-syntax to parser</li>
+		</ul>
+		<h4>18-02-16</h4>
+		<ul>
+			<li>Parser: aggregate-functions now also for groupby/having</li>
+			<li>Fixed error in SQLike that caused group by not to work on table.column</li>
+			<li>groupby/having now usable in queries (having only works if followed directly after group by)</li>
+		</ul>
+		<h4>16-02-16</h4>
+		<ul>
+			<li>Parser fixes for groupby/having</li>
+			<li>Added aggregate-functions (avg,sum,count,min,max) to parser</li>
+			<li>Aggregate function now usable in select</li>
+		</ul>
+		<h4>04-02-16</h4>
+		<ul>
+			<li>Parser fixes for like/between</li>
+			<li>'(not) between/like' can now be used in queries</li>
+		</ul>
+		</div>
+	</div>
+</body>
+</html>

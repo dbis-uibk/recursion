@@ -1,0 +1,129 @@
+group: PS Datenbanksysteme WS2014/15, Blatt 4
+description: Tables for the lecture [Databases: Foundations, Data Models and System Concepts - University of Innsbruck](http://dbis-informatik.uibk.ac.at/270-0-VO-Datenbanksysteme.html) chapter 3 
+
+Category = 
+{
+	id:number, name:string       , season:string  
+	1        , 'shoes'           , 'winter'       
+	2        , 'shoes'           , 'summer'       
+	3        , 'swim wear'       , 'summer'       
+	4        , 'tennis'          , 'winter/summer'
+	5        , 'ski'             , 'winter'       
+	6        , 'snowboard'       , 'winter'       
+	7        , 'golf'            , 'summer'       
+	8        , 'diving equipment', 'summer'
+	9        , 'running wear', 'summer'
+	10       , 'fitness gear', 'winter/summer'
+	11	 , 'gloves', 'winter'
+}
+
+Salesperson =
+{
+	ssn:string   , firstname:string, lastname:string, type:string, boss:string  
+	'8131-240170', 'Hillary'       , 'Ortiz'        , 'trainee'  , '8010-310564'
+	'9457-170993', 'Blossom'       , 'Dejesus'      , 'assistant', '8010-310564'
+	'8010-310564', 'Gage'          , 'Jackson'      , 'foreman'  , '7363-50586' 
+	'9771-50397' , 'Kitra'         , 'Daugherty'    , 'trainee'  , '8010-310564'
+	'5644-180162', 'Odessa'        , 'Gordon'       , 'assistant', '8010-310564'
+	'3567-30678' , 'Jescie'        , 'Carrillo'     , 'foreman'  , '8010-310564'
+	'6233-300600', 'Keith'         , 'Jacobson'     , 'trainee'  , '8010-310564'
+	'2537-60578' , 'Ferdinand'     , 'Taylor'       , 'assistant', '8010-310564'
+	'9137-190985', 'Tanner'        , 'Mueller'      , 'foreman'  , '8010-310564'
+	'7543-240863', 'Trevor'        , 'Neal'         , 'trainee'  , '8010-310564'
+	'1142-241059', 'Rina'          , 'Ruiz'         , 'assistant', '8010-310564'
+	'4463-30263' , 'Aubrey'        , 'Ewing'        , 'foreman'  , '8010-310564'
+	'9357-270759', 'Lars'          , 'Baldwin'      , 'trainee'  , '8010-310564'
+	'6741-190571', 'Dai'           , 'Miller'       , 'assistant', '8010-310564'
+	'7658-130191', 'September'     , 'Hebert'       , 'foreman'  , '3111-160394'
+	'4085-160965', 'Ignacia'       , 'Leach'        , 'trainee'  , '3111-160394'
+	'6300-230760', 'Lucian'        , 'Grimes'       , 'assistant', '3111-160394'
+	'3111-160394', 'Tiger'         , 'Dale'         , 'foreman'  , '7363-50586' 
+	'5633-60673' , 'Josephine'     , 'Stein'        , 'trainee'  , '3111-160394'
+	'7327-180171', 'Bree'          , 'Bates'        , 'assistant', '3111-160394'
+	'6463-230481', 'Lacota'        , 'Whitney'      , 'foreman'  , '3111-160394'
+	'3652-271168', 'Giselle'       , 'Gentry'       , 'trainee'  , '3111-160394'
+	'6205-210570', 'Wesley'        , 'Griffith'     , 'assistant', '3111-160394'
+	'5192-220591', 'Bradley'       , 'Salinas'      , 'foreman'  , '7363-50586' 
+	'3083-270682', 'Xena'          , 'Dawson'       , 'trainee'  , '3111-160394'
+	'1372-230356', 'Randall'       , 'Stein'        , 'assistant', '3111-160394'
+	'9542-280494', 'Reuben'        , 'Greer'        , 'foreman'  , '3111-160394'
+	'4253-140855', 'Carl'          , 'Fisher'       , 'trainee'  , '3111-160394'
+	'4754-61086' , 'Hannah'        , 'Golden'       , 'assistant', '3111-160394'
+	'1762-31079' , 'Paula'         , 'Mccarty'      , 'foreman'  , '3111-160394'
+	'8217-200364', 'Kermit'        , 'Mosley'       , 'trainee'  , '3111-160394'
+	'4256-90595' , 'Leonard'       , 'Kirby'        , 'trainee'  , '3111-160394'
+	'7363-50586' , 'Karyn'         , 'Bentley'      , 'foreman'  , '7363-50586' 
+	'8594-250576', 'Dexter'        , 'Patel'        , 'trainee'  , '3111-160394'
+	'5434-70676' , 'Amal'          , 'Knapp'        , 'assistant', '5192-220591'
+	'3430-50471' , 'Kaseem'        , 'Osborne'      , 'foreman'  , '5192-220591'
+	'2579-90373' , 'Idona'         , 'Mack'         , 'trainee'  , '5192-220591'
+	'4246-100266', 'Ulysses'       , 'Case'         , 'assistant', '5192-220591'
+	'8083-80152' , 'Bree'          , 'Ryan'         , 'foreman'  , '5192-220591'
+	'6521-71147' , 'Brooke'        , 'Mitchell'     , 'trainee'  , '5192-220591'
+	'7844-21087' , 'Murphy'        , 'Burch'        , 'assistant', '5192-220591'
+	'1632-260896', 'Derek'         , 'Morrison'     , 'foreman'  , '5192-220591'
+	'7080-280196', 'Josephine'     , 'Willis'       , 'trainee'  , '5192-220591'
+	'4952-211068', 'Kane'          , 'Buckley'      , 'assistant', '5192-220591'
+	'6127-121094', 'Bernard'       , 'Donaldson'    , 'foreman'  , '5192-220591'
+	'3542-70175' , 'Ishmael'       , 'Doyle'        , 'trainee'  , '5192-220591'
+	'3668-100845', 'Nolan'         , 'Love'         , 'assistant', '5192-220591'
+	'5086-151288', 'Amos'          , 'Bell'         , 'foreman'  , '5192-220591'
+	'8563-230260', 'Carla'         , 'Turner'       , 'trainee'  , '5192-220591'
+}
+
+
+
+Specialization = 
+{
+	ssn:string  , categoryID:number, last_spec_date:date
+	'8131-240170', 2              , 2015-09-19         
+	'9457-170993', 4              , 2014-10-18        
+	'8010-310564', 1              , 2014-02-12         
+	'9771-50397' , 1              , 2014-03-11         
+	'8010-310564', 2              , 2014-06-27         
+	'3567-30678' , 7              , 2014-01-29         
+	'6233-300600', 5              , 2013-11-04         
+	'2537-60578' , 3              , 2015-06-29         
+	'9137-190985', 1              , 2014-05-23         
+	'7543-240863', 4              , 2014-01-25         
+	'1142-241059', 8              , 2015-08-25         
+	'4463-30263' , 4              , 2014-11-20         
+	'9357-270759', 4              , 2014-03-18         
+	'6741-190571', 3              , 2013-10-28        
+	'7658-130191', 1              , 2013-12-09         
+	'7658-130191', 4              , 2013-11-10         
+	'7658-130191', 7              , 2014-04-06         
+	'7658-130191', 10              , 2013-10-23        
+	'5633-60673' , 7              , 2015-05-31         
+	'7327-180171', 2              , 2015-07-02         
+	'6463-230481', 6              , 2014-03-14         
+	'3652-271168', 10              , 2015-02-16         
+	'6205-210570', 4              , 2014-10-08        
+	'5192-220591', 7              , 2014-05-17         
+	'3083-270682', 6              , 2015-04-18         
+	'1372-230356', 7              , 2014-10-17        
+	'9542-280494', 2              , 2015-03-08         
+	'4253-140855', 8              , 2013-10-25        
+	'4754-61086' , 4              , 2014-09-05         
+	'1762-31079' , 5              , 2014-11-22         
+	'1762-31079' , 1              , 2014-02-17         
+	'4256-90595' , 11              , 2014-03-08         
+	'7363-50586' , 2              , 2014-03-28         
+	'8594-250576', 3              , 2015-09-15         
+	'5434-70676' , 3              , 2014-06-16         
+	'3430-50471' , 6              , 2014-06-25         
+	'2579-90373' , 6              , 2015-05-20         
+	'4246-100266', 8              , 2015-06-19         
+	'8083-80152' , 2              , 2013-11-19         
+	'6521-71147' , 7              , 2014-04-04         
+	'6521-71147' , 2              , 2015-04-14         
+	'1632-260896', 2              , 2014-04-10         
+	'6521-71147' , 6              , 2015-04-15         
+	'4952-211068', 1              , 2014-06-09         
+	'6127-121094', 4              , 2013-12-03         
+	'3542-70175' , 4              , 2014-03-14         
+	'3668-100845', 2              , 2014-10-15        
+	'6127-121094', 5              , 2014-05-07         
+	'8563-230260', 3              , 2013-11-30         
+}
+

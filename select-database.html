@@ -1,0 +1,27 @@
+<div class="container">
+	<div class="dropdown">
+		<button class="btn btn-primary dropdown-toggle" type="button"
+			data-toggle="dropdown">
+			{{button}}<span class="caret"></span>
+		</button>
+		
+		<ul class="col-md-8 dropdown-menu dropdown-menu-large row" role="menu">
+			<li class="col-xs-6">
+				<ul>
+					<li class="dropdown-header">Predefined datasets</li>
+					<li ng-show="gistError">Error while loading data</li>
+					<li ng-repeat="db in localDb track by $index"><a ng-click="selectLocalDb($index)">{{db.group}}</a></li>
+				</ul>
+			</li>
+			<li class="col-xs-6">
+				<ul>
+				<li class="dropdown-header">Import your own dataset</li>
+				<li><input type="text" placeholder="gist ID" ng-model="gistId" />
+				<button type="button" ng-click="loadGist()">load</button></li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+	
+	<display-database></display-database> 
+</div>
