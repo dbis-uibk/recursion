@@ -1,2 +1,2 @@
 # recursion
-a tool for stepwise executing recursive SQL statements
+a tool for stepwise execution recursive SQL statements
